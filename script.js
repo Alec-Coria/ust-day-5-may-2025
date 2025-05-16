@@ -14,11 +14,28 @@ function addOrEditBook(){
     const environment = editId ? updateBookEnvironment : createBookEnvironment;
     const inputs = environment.querySelectorAll("input");
     const formData = {};
+    const inputsToCorrect = [];
+    let validInputs = true;
 
     inputs.forEach(input => {
+        input.classList.remove("is-invalid");
+    });
+
+    inputs.forEach(input => {
+        const inputValue = input.value.trim();
+        if (!inputValue) {
+            inputsToCorrect.push(input.name);
+            validInputs = false;
+            input.classList.add("is-invalid");
+            return;
+        }
         const name = input.name || input.name || "unnamed";
         formData[name] = input.value;
     });
+    if (!validInputs) {
+        const missingFields = inputsToCorrect.join(", ");
+        return alert(`The following fields are required: ${missingFields}`);
+    }
 
     const xhr = new XMLHttpRequest();
     const method = editId ? "PUT" : "POST";
