@@ -1,58 +1,89 @@
+const API_URL = "http://localhost:3000/books";
+let editId = null;
+let modalInstance;
 
+document.addEventListener('DOMContentLoaded', () => {
+    const modalElement = document.getElementById('editModal');
+    modalInstance = new bootstrap.Modal(modalElement);
+});
 
-function add(){
+function addOrEditBook(){
+    const createBookEnvironment = document.querySelector("#createBookEnvironment");
+    const updateBookEnvironment = document.querySelector("#updateBookEnvironment");
 
-    const inputs = document.querySelectorAll("input");
+    const environment = editId ? updateBookEnvironment : createBookEnvironment;
+    const inputs = environment.querySelectorAll("input");
     const formData = {};
-    const newRowData = {};
 
     inputs.forEach(input => {
         const name = input.name || input.name || "unnamed";
         formData[name] = input.value;
     });
 
-    const url = 'http://localhost:3000/books';
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-    })
-        .then(response => response.json())
-    .then(data => {
-        this.newRowData = data;
-        alert("Book successfully submitted.");
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert("Error saving book info.");
-    });
+    const xhr = new XMLHttpRequest();
+    const method = editId ? "PUT" : "POST";
+    const url = editId ? `${API_URL}/${editId}` : API_URL;
 
-    document.getElementById("title").value = "";
-    document.getElementById("author").value = "";
+    xhr.open(method, url, true);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    try{
+        xhr.onload = () => {
+            alert(editId ? "Book updated" : "Book added");
+            document.getElementById("title").value = "";
+            document.getElementById("author").value = "";
+            document.getElementById("editTitle").value = "";
+            document.getElementById("editAuthor").value = "";
+            editId = null;
+            loadDataTable();
+            modalInstance.hide();
+        }
+        
+        xhr.send(JSON.stringify(formData));
+    }
+    catch(e){
+        alert("Error saving book info. " + e)
+    }
+
+    
+    // fetch(API_URL, {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify(formData)
+    // })
+    //     .then(response => response.json())
+    // .then(data => {
+    //     this.newRowData = data;
+    //     alert("Book successfully submitted.");
+    // })
+    // .catch(error => {
+    //     console.error('Error:', error);
+    //     alert("Error saving book info.");
+    // });
+
+}
+
+function editBook(id, title, author){
+    document.getElementById('editTitle').value = title;
+    document.getElementById('editAuthor').value = author;
+    editId = id;
+    modalInstance.show();
 }
 
 async function deleteBook(id) {
-    await fetch(`http://localhost:3000/books/${id}`, {method: 'DELETE'});
-    createDataTable();
-    alert('Deleted');
+    const xhr = new XMLHttpRequest();
+    xhr.open("DELETE", `${API_URL}/${id}`);
+    xhr.onload = () => {
+      alert("Post deleted!");
+      loadDataTable();
+    };
+    xhr.send();
 }
 
-async function createDataTable(){
-    // const response = await fetch('http://localhost:3000/books');
-    // const dataInTable = await response.json();
-
-    // dataInTable.forEach(data => {
-    //         // var rowNode = table.row
-    //         //     .add([data.title, data.author])
-    //         //     .draw()
-    //         //     .node();
-    //     })
-
-        
+async function loadDataTable(){
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:3000/books");
+    xhr.open("GET", API_URL);
     xhr.onload = function () {
       const books = JSON.parse(xhr.responseText);
       const table = document.getElementById("dataTable");
@@ -72,7 +103,8 @@ async function createDataTable(){
             <td>${book.title}</td>
             <td>${book.author}</td>
             <td>
-              <button type="button" class="btn btn-danger center" onclick="deleteBook('${book.id}')">Delete</button>
+                <button type="button" class="btn btn-info" onclick="editBook('${book.id}', '${book.title}', '${book.author}')">Edit</button>
+                <button type="button" class="btn btn-danger center" onclick="deleteBook('${book.id}')">Delete</button>
             </td>
           </tr>
         `;
@@ -81,4 +113,4 @@ async function createDataTable(){
     xhr.send();
 }
 
-createDataTable();
+loadDataTable();
