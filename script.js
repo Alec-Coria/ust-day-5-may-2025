@@ -61,24 +61,6 @@ function addOrEditBook(){
         alert("Error saving book info. " + e)
     }
 
-    
-    // fetch(API_URL, {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify(formData)
-    // })
-    //     .then(response => response.json())
-    // .then(data => {
-    //     this.newRowData = data;
-    //     alert("Book successfully submitted.");
-    // })
-    // .catch(error => {
-    //     console.error('Error:', error);
-    //     alert("Error saving book info.");
-    // });
-
 }
 
 function editBook(id, title, author){
@@ -92,7 +74,7 @@ async function deleteBook(id) {
     const xhr = new XMLHttpRequest();
     xhr.open("DELETE", `${API_URL}/${id}`);
     xhr.onload = () => {
-      alert("Post deleted!");
+      alert("Book deleted");
       loadDataTable();
     };
     xhr.send();
