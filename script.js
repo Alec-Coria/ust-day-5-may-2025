@@ -1,6 +1,7 @@
 const API_URL = "http://localhost:3000/books";
 let editId = null;
 let modalInstance;
+let allBooks = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     const modalElement = document.getElementById('editModal');
@@ -74,42 +75,66 @@ async function deleteBook(id) {
     const xhr = new XMLHttpRequest();
     xhr.open("DELETE", `${API_URL}/${id}`);
     xhr.onload = () => {
-      alert("Book deleted");
+      alert(`Book ${(JSON.parse(xhr.responseText)).title} deleted`);
       loadDataTable();
     };
     xhr.send();
+}
+
+function renderTable(books){
+    const table = document.getElementById("dataTable");
+    table.innerHTML = `
+                      <thead class="thead-light">
+                          <tr>
+                              <th>ID</th>
+                              <th>Title</th>
+                              <th>Author</th>
+                              <th>Action</th>
+                          </tr>
+                      </thead>`
+    books.forEach(book => {
+      table.innerHTML += `
+        <tr>
+          <td>${book.id}</td>
+          <td>${book.title}</td>
+          <td>${book.author}</td>
+          <td>
+              <button type="button" class="btn btn-info" onclick="editBook('${book.id}', '${book.title}', '${book.author}')">Edit</button>
+              <button type="button" class="btn btn-danger center" onclick="deleteBook('${book.id}')">Delete</button>
+          </td>
+        </tr>
+      `;
+    });
 }
 
 async function loadDataTable(){
     const xhr = new XMLHttpRequest();
     xhr.open("GET", API_URL);
     xhr.onload = function () {
-      const books = JSON.parse(xhr.responseText);
-      const table = document.getElementById("dataTable");
-      table.innerHTML = `
-                        <thead class="thead-light">
-                            <tr>
-                                <th>ID</th>
-                                <th>Title</th>
-                                <th>Author</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>`
-      books.forEach(book => {
-        table.innerHTML += `
-          <tr>
-            <td>${book.id}</td>
-            <td>${book.title}</td>
-            <td>${book.author}</td>
-            <td>
-                <button type="button" class="btn btn-info" onclick="editBook('${book.id}', '${book.title}', '${book.author}')">Edit</button>
-                <button type="button" class="btn btn-danger center" onclick="deleteBook('${book.id}')">Delete</button>
-            </td>
-          </tr>
-        `;
-      });
+      allBooks = JSON.parse(xhr.responseText);
+      renderTable(allBooks);
     };
     xhr.send();
+}
+
+function filterBooks(){
+    const titleFilter = document.getElementById("searchTitle").value.toLowerCase();
+    const authorFilter = document.getElementById("searchAuthor").value.toLowerCase();
+
+    const books = allBooks.filter(book => {
+        return (
+            book.title.toLowerCase().includes(titleFilter) &&
+            book.author.toLowerCase().includes(authorFilter)
+        );
+    })
+
+    renderTable(books);
+}
+
+function clearFilters(){
+    document.getElementById("searchTitle").value = "";
+    document.getElementById("searchAuthor").value = "";
+    loadDataTable();
 }
 
 loadDataTable();
