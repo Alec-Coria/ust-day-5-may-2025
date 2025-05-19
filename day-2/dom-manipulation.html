@@ -1,0 +1,86 @@
+<html>
+    <script>
+        const add = () => {
+            const qty1 = document.getElementById("qty1");
+            const qty2 = document.getElementById("qty2");
+            const divElement = document.getElementById("result");
+            divElement.textContent = parseInt(qty1.value) + parseInt(qty2.value);
+        }
+
+        const check = () => {
+            const divElement = document.getElementById("gender");
+            if(document.getElementById("male").checked){
+                divElement.textContent = "male";
+            }
+            else if(document.getElementById("female").checked){
+                divElement.textContent = "female";
+            }
+        }
+
+        const addNewTextField = () => {
+            const container = document.getElementById("container");
+
+            const div = document.createElement("div");
+            const input = document.createElement("input");
+            input.type = "number";
+            input.className = "input";
+
+            div.appendChild(input);
+            container.appendChild(div);
+        }
+
+        const sum = () => {
+            const inputs = document.querySelectorAll("#container input");
+            let sum = 0;
+
+            inputs.forEach(input => {
+                const value = parseInt(input.value);
+                if (!isNaN(value)) {
+                    sum += value;
+                }
+            });
+            document.getElementById("result").innerText = "Result: " + sum;
+
+            localStorage.setItem("sumResult", sum);
+        }
+
+        window.onload = () => {
+            const savedSum = localStorage.getItem("sumResult");
+            if (savedSum !== null) {
+                document.getElementById("result").innerText = "Result: " + savedSum;
+            }
+        };
+
+        function sum2(){
+            var sum = 0;
+            const numbers = document.getElementsByClassName('input');
+            for (var i = 0; i < numbers.length; i++){
+                value = parseInt(numbers[i].value);
+                if (!isNaN(value)) {
+                    sum += value;
+                }
+            }
+            const divElement = document.getElementById('result');
+            divElement.textContent = sum;
+        }
+
+
+    </script>
+    <body>
+        <!-- <input type = "number" id="qty1">
+        <input type = "number" id="qty2">
+        <button onclick="add()">add</button>
+        Result: <div id="result"></div> -->
+
+        <!-- <input type = "radio" id="male" name = "gender"> male
+        <input type = "radio" id="female" name ="gender"> female
+        <button onclick="check()">Check</button>
+        Gender: <div id="gender"></div> -->
+
+        
+        <button onclick="addNewTextField()">Add New</button>
+        <button onclick="sum2()">Sum</button>
+        <div id="container"></div>
+        <div id="result"></div>
+    </body>
+</html>

@@ -1,0 +1,24 @@
+<html>
+    <script>
+        const s1 = "UST"
+        const s2 = new String("UST");
+        const s3 = new String("UST");
+        console.log(s1 == s2);
+        console.log(s2 == s3);
+        s1.length = 4;
+        console.log(s1.length);
+
+        // Gerardo's response
+         function reverseString(str) {
+            let newString = "";
+            for (let i = str.length - 1; i >= 0; i--) {
+                newString += str[i];
+            }
+            return newString;
+        }
+        console.log(reverseString(s3));
+
+        // Rodolfo's example
+        console.log(s3.split('').reverse().join(''))
+    </script>
+</html>

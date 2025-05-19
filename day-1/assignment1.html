@@ -1,0 +1,42 @@
+<html>
+    <script>
+        function selectedCheckbox(event) {
+            if (document.getElementById("MaleCheckbox") = "MaleCheckbox"){
+                document.getElementById("FemaleCheckbox").value = false;
+            }
+            else {
+                document.getElementById("MaleCheckbox").value = false;
+            }
+        }
+        
+        var car = document.getElementById("car")
+
+        const select = (event) => {
+            console.log(event.target.value);
+            document.getElementById("car").innerHTML = event.target.value;
+        }   
+
+
+    </script>
+    <body>
+        <div>
+            <input type = "text" name = "Text 1">
+        </div>
+        <div>
+            <input type = "text" name = "Text 1">
+        </div>
+        <div>
+            <input id="MaleCheckbox" type = "radio" name = "gender">Male
+            <input id="FemaleCheckbox" type = "radio" name = "gender">Female
+        </div>
+        <div>
+            <select onchange="select(event)" name = "cars" id="cars">
+                <option value = "Volvo">Volvo</option>
+                <option value = "Saab">Saab</option>
+                <option value = "Mercedes">Mercedes</option>
+                <option value = "Audi">Audi</option>
+            </select>
+            <label id="car">CAR</label>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,38 @@
+{
+  "data": [
+    {
+      "id": "47cd",
+      "unnamed": "Alec",
+      "lastName": "Coria",
+      "email": "email@alec.com",
+      "phoneNumber": "4444333",
+      "birthdate": "1999-09-14",
+      "gender": "Male",
+      "address": "complete address",
+      "zipCode": "12321",
+      "facebookLink": "facebooklinkk",
+      "linkedinLink": "linkedinlinkk",
+      "username": "username",
+      "password": "password",
+      "employeeId": "idemployee",
+      "designation": "designation"
+    },
+    {
+      "id": "e8ef",
+      "firstName": "Alec",
+      "lastName": "Coria",
+      "unnamed": "email@alec.com",
+      "Phone Number": "33231",
+      "Birthdate": "1999-09-14",
+      "Gender": "Male",
+      "Complete Address": "complete address",
+      "Zip Code": "12321",
+      "Facebook Link": "facebook.com",
+      "LinkedIn Link": "linkedin.com",
+      "Username": "username1",
+      "Password": "asd",
+      "Employee ID": "123",
+      "Designation": "designation"
+    }
+  ]
+}

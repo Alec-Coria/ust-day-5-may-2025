@@ -1,0 +1,20 @@
+<html>
+    <script>
+        function bodyfn(){
+            console.log('handler at body level');
+        }
+        function handlerOnDiv(event){
+            console.log('div handler');
+            console.log(event.pageX, event.pageY);
+            console.log(event.target);
+            event.stopPropagation(); //capture the event
+        }
+    </script>
+    <body onclick="bodyfn()">
+        <div onclick="handlerOnDiv(event)">
+            <button>click</button>
+            <button>click</button>
+            <button>click</button>
+        </div>
+    </body>
+</html>

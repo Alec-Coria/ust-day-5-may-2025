@@ -1,0 +1,18 @@
+<html>
+    <script>
+        function Person(name, age) {
+            this.name = name;
+            this.age = age;
+        }
+        const p1 = new Person("Alec", 25);
+        Person.prototype.walk = function () {
+            console.log('walking');
+        }
+        p1.walk();
+        console.log(p1.name);
+        console.log(p1.age);
+
+        console.log(Array.prototype);
+
+    </script>
+</html>

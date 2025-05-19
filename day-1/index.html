@@ -1,0 +1,42 @@
+<html>
+    <script>
+        const a = 1; // reference -> constant or variable
+        // a = 2; // re assignment
+        var b = 5;
+        const numbers = [1, 2, 3, 11, 5, -1]
+        // numbers.sort(function(a,v) {
+        //     return a - b;
+        // });
+        const newArray = numbers.map(function(a){
+            return a + 10;
+        })
+        console.log(numbers)
+        console.log(newArray);
+        //numbers.push(4); //modification
+
+        // increment element by 10 only if it's an even number
+        const evenNumbers = numbers.map(function(a){
+            // if(a % 2 == 0){
+            //     return a+10;
+            // }
+            // else return a;
+            return a % 2 == 0 ? a+10 : a; //Ternary operator
+        })
+
+        console.log(evenNumbers);
+
+        const processClick = function (event){ //event handler function
+            console.log(event.target.name);
+            return 120; //any returned value is lost
+        }
+
+        const result = numbers.find(params => console.log(params))
+        // console.log(result);
+        // console.log(numbers);
+    </script>
+    <body>
+        <input type = "text" onclick = "processClick(event)" name = "Text 1">
+        <button onclick="processClick(event)" name="button 1">Button 1</button>
+        <button onclick="processClick(event)" name="button 2">Button 2</button>
+    </body>
+</html>

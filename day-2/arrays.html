@@ -1,0 +1,23 @@
+<html>
+    <script>
+        const numbers = [3, 1, 6, 3, 7, -1];
+        const newArray = numbers.map(function(element){
+            return element + 2;
+        });
+        const value = numbers.forEach(function(element){
+            console.log(element);
+        })
+        console.log(value);
+        //console.log(numbers);
+        //console.log(newArray);
+        const sum = numbers.reduce(function(previousValue, element, currentIndex){
+            console.log(previousValue, element, currentIndex);
+            if(currentIndex % 2 == 1){
+                return previousValue + element;
+            }
+            else
+                return previousValue;
+        })
+        //console.log(sum);
+    </script>
+</html>
