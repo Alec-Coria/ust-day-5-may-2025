@@ -6,11 +6,12 @@ import ProjectForm from './ProjectForm';
 //Componente reutilizable para parsear lista de proyectos
 //Interface con la lista de proyectos
 interface ProjectListProps {
-    projects: Project[]
+    projects: Project[],
+    onSave: (project: Project) => void;
 }
 
 //function donde se muestra la lista de proyectos en su componente
-function ProjectList({ projects }: ProjectListProps) {
+function ProjectList({ projects, onSave }: ProjectListProps) {
     //useState para manipular el state del DOM
     const [projectBeingEdited, setprojectBeingEdited] = useState({});
     const handleEdit = (project: Project) => {
@@ -28,7 +29,7 @@ function ProjectList({ projects }: ProjectListProps) {
                     {/* Uso de state para renderizar un componente u otro de acuerdo a condicion ternaria */}
                     {/* Click en edit cambia uno u otro*/}
                     {project === projectBeingEdited ? (
-                        <ProjectForm  onCancel={cancelEditing}/>
+                        <ProjectForm onSave={onSave} onCancel={cancelEditing}/>
                     ) : (
                         <ProjectCard
                         //Valores que se setean y se pasan a traves de props al child ProjectCard
