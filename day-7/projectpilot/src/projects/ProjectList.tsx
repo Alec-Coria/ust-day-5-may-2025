@@ -36,7 +36,7 @@ function ProjectList({ projects, onSave }: ProjectListProps) {
                         />
                     ) : (
                         <ProjectCard
-                        //Valores que se setean y se pasan a traves de props al child ProjectCard
+                        //Valores que se setean y se pasan a traves de props al child ProjectCard, donde se usan y retornan el valor hacia aca
                             project={project} onEdit={handleEdit}
                         />
                     )}

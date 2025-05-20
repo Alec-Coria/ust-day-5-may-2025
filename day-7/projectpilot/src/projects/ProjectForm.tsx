@@ -8,16 +8,54 @@ interface ProjectFormProps{
   onSave: (project: Project) => void;
 }
 
-function ProjectForm({ onSave, onCancel, project: initialProject }: ProjectFormProps) {
+function ProjectForm({ 
+  onSave, 
+  onCancel, 
+  project: initialProject }: ProjectFormProps) {
   //Manejo de project en state(Hook), a traves de props dentro del form
   const [project, setProject] = useState(initialProject);
+
+  //Manejo de errores con hooks
+  const [errors, setErrors] = useState({
+    name:'',
+    description:'',
+    budget:''
+  });
 
   const handleSubmit = (event: SyntheticEvent) => {
     //previene que el navegador se recargue (evita operaciones por defecto)
     event.preventDefault();
     //save del proyecto actualizado alojado en state (hook)
+    if(!isValid()) return;
     onSave(project);
   };
+
+  //funcion para validar inputs
+  function validate(project: Project) {
+    let errors: any = { name: '', description: '', budget: ''};
+    if (project.name.length === 0){
+      errors.name = 'Name is required';
+    }
+    if (project.name.length > 0 && project.name.length < 3) {
+      errors.name = 'Name needs to be at least 3 characters.';
+    }
+    if(project.description.length === 0){
+      errors.description = 'Description is required.'
+    }
+    if(project.budget === 0){
+      errors.budget = 'Budget must be ore than $0.';
+    }
+    return errors;
+  }
+
+  //funcion para validar si hay algo escrito
+  function isValid() {
+    return (
+      errors.name.length === 0 &&
+      errors.description.length === 0 &&
+      errors.budget.length === 0
+    );
+  }
 
   //Manejo de handle change, cambio de valores en state por proyecto
   const handleChange = (event: any) => {
@@ -44,7 +82,8 @@ function ProjectForm({ onSave, onCancel, project: initialProject }: ProjectFormP
       updatedProject = new Project({ ...p, ...change});
       return updatedProject;
     })
-
+    //validacion de inputs
+    setErrors(() => validate(updatedProject));
   };
 
   return (
@@ -57,6 +96,11 @@ function ProjectForm({ onSave, onCancel, project: initialProject }: ProjectFormP
           value={project.name}
           onChange={handleChange}
         />
+        {errors.name.length > 0 && (
+          <div className="card error">
+            <p>{errors.name}</p>
+          </div>
+        )}
         <label htmlFor="description">Project Description</label>
         <textarea 
           name="description"
@@ -64,6 +108,11 @@ function ProjectForm({ onSave, onCancel, project: initialProject }: ProjectFormP
           value={project.description}
           onChange={handleChange}
         />
+        {errors.description.length > 0 && (
+          <div className="card error">
+            <p>{errors.description}</p>
+          </div>
+        )}
         <label htmlFor="budget">Project Budget</label>
         <input 
           type="number" 
@@ -72,6 +121,11 @@ function ProjectForm({ onSave, onCancel, project: initialProject }: ProjectFormP
           value={project.budget}
           onChange={handleChange}
         />
+        {errors.budget.length > 0 && (
+          <div className="card error">
+            <p>{errors.budget}</p>
+          </div>
+        )}
         <label htmlFor="isActive">Active?</label>
         <input 
           type="checkbox" 
@@ -80,6 +134,8 @@ function ProjectForm({ onSave, onCancel, project: initialProject }: ProjectFormP
           onChange={handleChange}
         />
         <div className="input-group">
+          {/* Al estar dentro de un form, cualquier boton al que no se le especifice "type" sera por defecto "submit"*/}
+          {/* Es decir, si se le da clic al boton, se enviara el formulario (inferido por HTML)*/}
             <button className="primary bordered medium">Save</button>
             <span />
             <button type="button" className="bordered medium" onClick={onCancel}>
