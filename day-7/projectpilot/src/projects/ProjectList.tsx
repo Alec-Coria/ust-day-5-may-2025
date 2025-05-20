@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Project } from './Project';
 import ProjectCard from './ProjectCard';
 import ProjectForm from './ProjectForm';
@@ -10,18 +11,26 @@ interface ProjectListProps {
 
 //function donde se muestra la lista de proyectos en su componente
 function ProjectList({ projects }: ProjectListProps) {
+    //useState para manipular el state del DOM
+    const [projectBeingEdited, setprojectBeingEdited] = useState({});
     const handleEdit = (project: Project) => {
-        console.log(project);
+        //seteo de project en constante de state
+        setprojectBeingEdited(project);
     }
     return (
         <div className="row">
             {projects.map((project) => (
                 <div key={project.id} className="cols-sm">
-                    <ProjectCard
-                        project={project}
-                        onEdit={handleEdit}
-                    />
-                    <ProjectForm />
+                    {/* Uso de state para renderizar un componente u otro de acuerdo a condicion ternaria */}
+                    {/* Click en edit cambia uno u otro*/}
+                    {project === projectBeingEdited ? (
+                        <ProjectForm />
+                    ) : (
+                        <ProjectCard
+                        //Valores que se setean y se pasan a traves de props al child ProjectCard
+                            project={project} onEdit={handleEdit}
+                        />
+                    )}
                 </div>
             ))}
         </div>

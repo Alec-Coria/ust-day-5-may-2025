@@ -9,6 +9,7 @@ interface ProjectCardProps {
     onEdit: (project: Project) => void;
 }
 
+//Componente individual para Card
 function ProjectCard(props: ProjectCardProps) {
     const { project, onEdit } = props;
     const handleEditClick = (projectBeingEdited: Project) => {
