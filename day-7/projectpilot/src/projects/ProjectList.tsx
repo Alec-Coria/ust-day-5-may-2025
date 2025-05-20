@@ -17,6 +17,10 @@ function ProjectList({ projects }: ProjectListProps) {
         //seteo de project en constante de state
         setprojectBeingEdited(project);
     }
+    //funcionalidad de boton cancelar en ProjectForm, borra el project del state, cambiando el renderizado de componentes
+    const cancelEditing = () => {
+        setprojectBeingEdited({});
+    }
     return (
         <div className="row">
             {projects.map((project) => (
@@ -24,7 +28,7 @@ function ProjectList({ projects }: ProjectListProps) {
                     {/* Uso de state para renderizar un componente u otro de acuerdo a condicion ternaria */}
                     {/* Click en edit cambia uno u otro*/}
                     {project === projectBeingEdited ? (
-                        <ProjectForm />
+                        <ProjectForm  onCancel={cancelEditing}/>
                     ) : (
                         <ProjectCard
                         //Valores que se setean y se pasan a traves de props al child ProjectCard
