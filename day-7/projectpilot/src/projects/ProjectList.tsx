@@ -12,10 +12,10 @@ interface ProjectListProps {
 
 //function donde se muestra la lista de proyectos en su componente
 function ProjectList({ projects, onSave }: ProjectListProps) {
-    //useState para manipular el state del DOM
+    //useState para manipular el Hook del DOM
     const [projectBeingEdited, setprojectBeingEdited] = useState({});
     const handleEdit = (project: Project) => {
-        //seteo de project en constante de state
+        //seteo de project en constante de Hook
         setprojectBeingEdited(project);
     }
     //funcionalidad de boton cancelar en ProjectForm, borra el project del state, cambiando el renderizado de componentes
@@ -26,10 +26,14 @@ function ProjectList({ projects, onSave }: ProjectListProps) {
         <div className="row">
             {projects.map((project) => (
                 <div key={project.id} className="cols-sm">
-                    {/* Uso de state para renderizar un componente u otro de acuerdo a condicion ternaria */}
+                    {/* Uso de state (Hook) para renderizar un componente u otro de acuerdo a condicion ternaria */}
                     {/* Click en edit cambia uno u otro*/}
                     {project === projectBeingEdited ? (
-                        <ProjectForm onSave={onSave} onCancel={cancelEditing}/>
+                        <ProjectForm 
+                            onSave={onSave} 
+                            onCancel={cancelEditing}
+                            project={project}
+                        />
                     ) : (
                         <ProjectCard
                         //Valores que se setean y se pasan a traves de props al child ProjectCard
