@@ -67,7 +67,6 @@ const projectAPI = {
                 );
             });
     },
-    
     put(project: Project) {
         return fetch(`${url}/${project.id}`, {
             method: 'PUT',
@@ -84,6 +83,12 @@ const projectAPI = {
                     `There was an error updating the project ${project.name}. Please try again.`
                 );
             })
+    },
+    find(id: number) {
+        return fetch(`${url}/${id}`)
+            .then(checkStatus)
+            .then(parseJSON)
+            .then(convertToProjectModel);
     }
 };
 
