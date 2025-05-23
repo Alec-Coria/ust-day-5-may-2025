@@ -1,97 +1,87 @@
-import { useState, useEffect } from 'react';
-import { projectAPI } from './projectAPI';
-import ProjectList from "./ProjectList";
-import { Project } from './Project';
+import { useProjects } from './projectHooks';
+import ProjectList from './ProjectList';
 
 function ProjectsPage() {
-  // Hook de estado para la lista de proyectos, inicializado con MOCK_PROJECTS (tipo Project[])
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | undefined>(undefined);
-  const [currentPage, setCurrentPage] = useState(1);
+  const {
+    data,
+    isPending,
+    error,
+    isError,
+    isFetching,
+    page,
+    setPage,
+  } = useProjects();
+  const query = useProjects();
 
-  const handleMoreClick = () => {
-    setCurrentPage((currentPage) => currentPage + 1)
-  }
-
-  useEffect(() => {
-    async function loadProjects() {
-      setLoading(true);
-      try {
-        const data = await projectAPI.get(currentPage);
-        if(currentPage === 1){
-          setProjects(data);
-        } else {
-          setProjects((projects) => [...projects, ...data]); //concatena los proyectos del state con los nuevos gracias a la paginacion
-        }
-      } catch (e) {
-        if (e instanceof Error) {
-          setError(e.message);
-        } else {
-          setError("Unknown error");
-        }
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadProjects();
-    //al momento de modificar el valor de currentPage, se recarga useEffect
-  }, [currentPage]);
-
- const saveProject = (project: Project) => {
-  //Especificar que p es de tipo Project
-  //Crear nueva lista de proyectos, reemplazando el proyecto que tiene el mismo id
-  projectAPI
-    .put(project)
-    .then((updatedProject) => {
-      let updatedProjects = projects.map((p) => {
-        return p.id === project.id ? new Project(updatedProject) : p;
-      });
-      setProjects(updatedProjects);
-    })
-    .catch((e) => {
-      setError(e.message);
-    })
-  };
   return (
     <>
       <h1>Projects</h1>
 
-      {error && (
-        <div className="row">
-          <div className="card large error">
-            <section>
-              <p>
-                <span className="icon-alert inverse"></span>
-                {error}
-              </p>
-            </section>
+      {data ? (
+        <>
+          {isFetching && !isPending && (
+            <span className="toast">Refreshing...</span>
+          )}
+          <ProjectList projects={data} />
+          <div className="row">
+            <div className="col-sm-4">Current page: {page + 1}</div>
+            <div className="col-sm-4">
+              <div className="button-group right">
+                <button
+                  className="button "
+                  onClick={() => setPage((oldPage) => oldPage - 1)}
+                  disabled={page === 0}
+                >
+                  Previous
+                </button>
+                <button
+                  className="button"
+                  onClick={() => {
+                    if (!query.isPreviousData) {
+                      query.setPage((oldPage) => oldPage + 1);
+                    }
+                  }}
+                  disabled={data.length != 10}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      )}
-      {/* Carga de lista de proyectos */}
-      <ProjectList onSave={saveProject} projects = {projects}/>
-
-      {loading && (
+        </>
+      ) : isPending ? (
         <div className="center-page">
           <span className="spinner primary"></span>
           <p>Loading...</p>
         </div>
-      )}
-
-      {!loading && !error && (
+      ) : isError && error instanceof Error ? (
         <div className="row">
-          <div className="col-sm-12">
-            <div className="button-group fluid">
-              <button className="button default" onClick={handleMoreClick}>
-                More...
-              </button>
-            </div>
+          <div className="card large error">
+            <section>
+              <p>
+                <span className="icon-alert inverse "></span>
+                {error.message}
+              </p>
+            </section>
           </div>
         </div>
-      )}
+      ) : null}
     </>
   );
 }
 
 export default ProjectsPage;
+
+// this commented code is unnecessary it's just here to show you the pattern
+// return (
+//   <>
+//     <h1>Header</h1>
+//     {data ? (
+//       <p>data</p>
+//     ) : isLoading ? (
+//       <p>Loading...</p>
+//     ) : isError ? (
+//       <p>Error Message</p>
+//     ) : null}
+//   </>
+// );

@@ -1,0 +1,28 @@
+import { useState } from 'react';
+import { projectAPI } from './projectAPI';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
+import type { UseQueryResult } from '@tanstack/react-query';
+import { Project } from './Project';
+
+export function useProjects() {
+  const [page, setPage] = useState(0);
+  let queryInfo = useQuery({
+    queryKey: ['projects', page],
+    queryFn: () => projectAPI.get(page + 1),
+    placeholderData: (previousData) => previousData,
+  });
+  console.log(queryInfo);
+  return { ...(queryInfo as UseQueryResult<Project[]> & { isPreviousData: boolean }), page, setPage };
+}
+
+export function useSaveProject() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (project: Project) => projectAPI.put(project),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["projects"] })
+  });
+}
