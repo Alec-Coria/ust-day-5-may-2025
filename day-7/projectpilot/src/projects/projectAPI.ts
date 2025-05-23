@@ -53,7 +53,7 @@ function convertToProjectModel(item: any): Project {
 const projectAPI = {
     get(page = 1, limit = 20) {
         return fetch(`${url}?_page=${page}&_limit=${limit}&_sort=name`)
-            //.then(delay(600))
+            .then(delay(2000))
             //interpreta el status de la peticion HTTP
             .then(checkStatus)
             //convierte la respuesta a JSON
@@ -74,7 +74,7 @@ const projectAPI = {
             headers: {
                 'Content-Type': 'application/json'
             }
-        })
+        }).then(delay(2000))
             .then(checkStatus)
             .then(parseJSON)
             .catch((error) => {
