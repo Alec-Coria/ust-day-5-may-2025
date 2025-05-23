@@ -1,15 +1,14 @@
 import type { SyntheticEvent } from 'react';
 import { useState } from 'react';
 import { Project } from './Project';
+import { useSaveProject } from './projectHooks';
 
 interface ProjectFormProps{
   project: Project;
   onCancel: () => void;
-  onSave: (project: Project) => void;
 }
 
-function ProjectForm({ 
-  onSave, 
+function ProjectForm({
   onCancel, 
   project: initialProject }: ProjectFormProps) {
   //Manejo de project en state(Hook), a traves de props dentro del form
@@ -22,12 +21,14 @@ function ProjectForm({
     budget:''
   });
 
+  const { mutate: saveProject, isPending } = useSaveProject();
+
   const handleSubmit = (event: SyntheticEvent) => {
     //previene que el navegador se recargue (evita operaciones por defecto)
     event.preventDefault();
     //save del proyecto actualizado alojado en state (hook)
     if(!isValid()) return;
-    onSave(project);
+    saveProject(project);
   };
 
   //funcion para validar inputs
@@ -88,6 +89,7 @@ function ProjectForm({
 
   return (
     <form className="input-group vertical" onSubmit={handleSubmit}>
+        {isPending && <span className="toast">Saving...</span>}
         <label htmlFor="name">Project Name</label>
         <input 
           type="text" 

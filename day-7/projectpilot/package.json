@@ -11,6 +11,8 @@
     "api": "json-server api/db.json --port 4000"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.76.2",
+    "@tanstack/react-query-devtools": "^5.76.2",
     "mini.css": "^3.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
