@@ -4,6 +4,7 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
+  
 } from '@tanstack/react-query';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { Project } from './Project';
@@ -22,7 +23,8 @@ export function useProjects() {
 export function useSaveProject() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (project: Project) => projectAPI.put(project),
+    mutationFn: (project: Project) => 
+      project.isNew ? projectAPI.post(project) : projectAPI.put(project),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["projects"] })
   });
 }

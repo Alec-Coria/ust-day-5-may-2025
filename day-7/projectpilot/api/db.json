@@ -969,6 +969,24 @@
       "contractSignedOn": "2015-03-31T22:18:57.328Z",
       "budget": 81317,
       "isActive": false
+    },
+    {
+      "id": "1afa",
+      "name": "AAAAAAA Building",
+      "description": "AAAAA Building Description",
+      "imageUrl": "/assets/placeimg_500_300_arch2.jpg",
+      "contractSignedOn": "2025-05-26T20:35:53.913Z",
+      "budget": 119900000,
+      "isActive": true
+    },
+    {
+      "id": "8317",
+      "name": "AAAAAAA Building 2",
+      "description": "AAAAAAA Building Description 2",
+      "imageUrl": "/assets/placeimg_500_300_arch5.jpg",
+      "contractSignedOn": "2025-05-26T20:37:28.433Z",
+      "budget": 1120002,
+      "isActive": true
     }
   ]
 }
