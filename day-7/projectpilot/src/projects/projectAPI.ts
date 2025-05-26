@@ -1,6 +1,8 @@
 import { Project } from './Project';
 const baseUrl = 'http://localhost:4000';
 const url = `${baseUrl}/projects`;
+//URL para NestJS
+const backendUrl = 'http://localhost:3001'
 
 function translateStatusToErrorMessage(status: number) {
     //Interpreta los errores cuando existan
@@ -35,11 +37,11 @@ function parseJSON(response: Response) {
     return response.json();
 }
 
-function delay(ms: number) {
-    return function (x: any): Promise<any> {
-        return new Promise((resolve) => setTimeout(() => resolve(x), ms));
-    }
-}
+// function delay(ms: number) {
+//     return function (x: any): Promise<any> {
+//         return new Promise((resolve) => setTimeout(() => resolve(x), ms));
+//     }
+// }
 
 function convertToProjectModels(data: any[]): Project[] {
     let projects: Project[] = data.map(convertToProjectModel);
@@ -53,7 +55,7 @@ function convertToProjectModel(item: any): Project {
 const projectAPI = {
     get(page = 1, limit = 10) {
         return fetch(`${url}?_page=${page}&_limit=${limit}&_sort=name`)
-            .then(delay(2000))
+            //.then(delay(2000))
             //interpreta el status de la peticion HTTP
             .then(checkStatus)
             //convierte la respuesta a JSON
@@ -74,7 +76,7 @@ const projectAPI = {
             headers: {
                 'Content-Type': 'application/json'
             }
-        }).then(delay(2000))
+        })//.then(delay(2000))
             .then(checkStatus)
             .then(parseJSON)
             .catch((error) => {
@@ -89,7 +91,24 @@ const projectAPI = {
             .then(checkStatus)
             .then(parseJSON)
             .then(convertToProjectModel);
-    }
+    },
+    post(project: Project) {
+        return fetch(`${backendUrl}`, {
+            method: 'POST',
+            body: JSON.stringify(project),
+            headers: {
+                'Content-type': 'application/json'
+            }
+        })
+            .then(checkStatus)
+            .then(parseJSON)
+            .catch((error) => {
+                console.log('log client error' + error);
+                throw new Error(
+                    `There was an error creating the project ${project.name}. Please try again.`
+                );
+            })
+    },
 };
 
 export { projectAPI };

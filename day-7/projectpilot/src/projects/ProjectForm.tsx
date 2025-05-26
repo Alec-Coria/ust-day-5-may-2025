@@ -5,12 +5,23 @@ import { useSaveProject } from './projectHooks';
 
 interface ProjectFormProps{
   project: Project;
-  onCancel: () => void;
+  onCancel?: () => void;
+  isNew?: boolean;
 }
 
 function ProjectForm({
   onCancel, 
-  project: initialProject }: ProjectFormProps) {
+  project: initialProject,
+  isNew }: ProjectFormProps) {
+  //Arreglo de las imagenes de assets para seleccionarlas al azar al momento de crear nuevo proyecto
+  const images = [
+    '/assets/placeimg_500_300_arch1.jpg',
+    '/assets/placeimg_500_300_arch2.jpg',
+    '/assets/placeimg_500_300_arch3.jpg',
+    '/assets/placeimg_500_300_arch4.jpg',
+    '/assets/placeimg_500_300_arch5.jpg',
+  ]
+
   //Manejo de project en state(Hook), a traves de props dentro del form
   const [project, setProject] = useState(initialProject);
 
@@ -28,23 +39,54 @@ function ProjectForm({
     event.preventDefault();
     //save del proyecto actualizado alojado en state (hook)
     if(!isValid()) return;
-    saveProject(project);
+    if(isNew) {
+      //selecciona una imagen al azar de assets y la pone en el proyecto que se esta creando
+      const projectWithRandomImage = new Project ({ ...project, imageUrl: getRandomImage() });
+      saveProject(projectWithRandomImage);
+    } else {
+      saveProject(project);
+    }
   };
+
+  function getRandomImage() {
+    const randomIndex = Math.floor(Math.random() * images.length);
+    return images[randomIndex];
+  }
 
   //funcion para validar inputs
   function validate(project: Project) {
     let errors: any = { name: '', description: '', budget: ''};
-    if (project.name.length === 0){
+
+    //Validar name
+    if (project.name.trim().length === 0) {
       errors.name = 'Name is required';
+    } else {
+      if(project.name.length >= 100) {
+        errors.name = 'Name must to be less than 100 characters';
+      }
+      if (project.name.length > 0 && project.name.length < 3) {
+        errors.name = 'Name needs to be at least 3 characters.';
+      }
+      if(project.name !== project.name.trim()) {
+        errors.name = 'Name cannot have leading or trailing spaces';
+      }
     }
-    if (project.name.length > 0 && project.name.length < 3) {
-      errors.name = 'Name needs to be at least 3 characters.';
-    }
-    if(project.description.length === 0){
+
+    //Validar descripcion
+    if(project.description.trim().length === 0) {
       errors.description = 'Description is required.'
+    } else {
+      if(project.description.length >= 2000) {
+        errors.description = 'Description must to be less than 2000 characters';
+      }
+      if(project.description !== project.description.trim()) {
+        errors.description = 'Description cannot have leading or trailing spaces';
+      }
     }
-    if(project.budget === 0){
-      errors.budget = 'Budget must be ore than $0.';
+
+    //Validar budget
+    if(project.budget === 0) {
+      errors.budget = 'Budget must be more than $0.';
     }
     return errors;
   }
@@ -67,12 +109,18 @@ function ProjectForm({
 
     //if input type is number convert the updatedValue string to a number
     if(type === 'number') {
-      updatedValue = Number(updatedValue);
+      if(updatedValue === 0){
+        updatedValue = '';
+        updatedValue = Number(updatedValue);
+      }
+      else {
+        updatedValue = Number(updatedValue);
+      }
     }
     const change = {
       [name]: updatedValue
     }
-    let updatedProject: Project;
+    let editingProject: Project;
     // need to do functional update b/c
     // the new project state is based on the previous project state
     // so we can keep the project properties that aren't being edited like project.id
@@ -80,11 +128,11 @@ function ProjectForm({
     // Cambio en el state(Hook) del project guardado en state (p), solamente guarda el cambio en el valor que cambio (change)
     // manteniendo los valores del proyecto anterior (sigue siendo p)
     setProject((p) => {
-      updatedProject = new Project({ ...p, ...change});
-      return updatedProject;
+      editingProject = new Project({ ...p, ...change});
+      return editingProject;
     })
     //validacion de inputs
-    setErrors(() => validate(updatedProject));
+    setErrors(() => validate(editingProject));
   };
 
   return (
@@ -138,11 +186,15 @@ function ProjectForm({
         <div className="input-group">
           {/* Al estar dentro de un form, cualquier boton al que no se le especifice "type" sera por defecto "submit"*/}
           {/* Es decir, si se le da clic al boton, se enviara el formulario (inferido por HTML)*/}
-            <button className="primary bordered medium">Save</button>
-            <span />
-            <button type="button" className="bordered medium" onClick={onCancel}>
-                cancel
+            <button className="primary bordered medium">
+              {isNew ? 'Create' : 'Save'}
             </button>
+            <span />
+            {!isNew && (
+              <button type="button" className="bordered medium" onClick={onCancel}>
+                  cancel
+              </button>
+            )}
         </div>
     </form>
   );
