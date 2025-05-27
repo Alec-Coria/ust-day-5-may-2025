@@ -1,6 +1,6 @@
 import { Controller, Get, Post, HttpCode, Body } from '@nestjs/common';
 import { AppService } from './app.service';
-import { ProjectDTO } from './ProjectDTO';
+import { ProjectDTO } from './project/dto/ProjectDTO';
 
 @Controller()
 export class AppController {
@@ -11,11 +11,11 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Post()
-  @HttpCode(201)
-  async create(@Body() projectDTO: ProjectDTO) {
-    const savedProject = await this.appService.createProject(projectDTO);
-    return savedProject;
-  }
+  // @Post()
+  // @HttpCode(201)
+  // async create(@Body() projectDTO: ProjectDTO) {
+  //   const savedProject = await this.appService.createProject(projectDTO);
+  //   return savedProject;
+  // }
 
 }
