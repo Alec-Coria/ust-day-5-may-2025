@@ -1,4 +1,4 @@
-import { IsBoolean, IsDate, IsNotEmpty, IsNumber, IsString, MaxLength } from "class-validator";
+import { IsBoolean, IsDate, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class ProjectDTO {
   @IsString()
@@ -17,9 +17,6 @@ export class ProjectDTO {
 
   @IsNumber()
   readonly contractTypeId: number;
-
-  @IsDate()
-  readonly contractSignedOn: Date;
 
   @IsNumber()
   @IsNotEmpty()

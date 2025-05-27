@@ -14,7 +14,7 @@ export class Project {
     @Prop()
     contractTypeId: number;
 
-    @Prop()
+    @Prop({ default: Date.now }) //default date
     contractSignedOn: Date;
 
     @Prop()

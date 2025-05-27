@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from '@nestjs/common';
+import { Query, Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from '@nestjs/common';
 import { ProjectDTO } from 'src/project/dto/ProjectDTO';
 import { ProjectService } from '../service/project.service';
 
@@ -39,9 +39,17 @@ export class ProjectController {
     }
 
     @Get()
-    async getProjects(@Res() response) {
+    async getProjects(
+        // Parametros de URL que paginan la informacion
+        @Query('_page') page = 1,
+        @Query('_limit') limit = 10,
+        @Query('_sort') sort = 'name',
+        @Res() response) {
         try {
-            const projectsData = await this.projectService.getAllProjects();
+            const pageNumber = Number(page);
+            const limitNumber = Number(limit);
+
+            const projectsData = await this.projectService.getAllProjects(pageNumber, limitNumber, sort);
             return response.status(HttpStatus.OK).json({
                 message: 'All projects data found successfully',
                 projectsData,

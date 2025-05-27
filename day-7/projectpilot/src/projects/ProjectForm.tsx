@@ -41,7 +41,8 @@ function ProjectForm({
     if(!isValid()) return;
     if(isNew) {
       //selecciona una imagen al azar de assets y la pone en el proyecto que se esta creando
-      const projectWithRandomImage = new Project ({ ...project, imageUrl: getRandomImage() });
+      //contractTypeId hardcodeado para insertar nuevo proyecto
+      const projectWithRandomImage = new Project ({ ...project, imageUrl: getRandomImage(), contractTypeId: 1 });
       saveProject(projectWithRandomImage);
     } else {
       saveProject(project);

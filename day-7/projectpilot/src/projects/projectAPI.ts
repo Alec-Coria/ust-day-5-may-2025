@@ -1,8 +1,8 @@
 import { Project } from './Project';
-const baseUrl = 'http://localhost:4000';
+// const baseUrl = 'http://localhost:4000';
+// Backend URL para NestJS
+const baseUrl = 'http://localhost:3001'
 const url = `${baseUrl}/projects`;
-//URL para NestJS
-const backendUrl = 'http://localhost:3001'
 
 function translateStatusToErrorMessage(status: number) {
     //Interpreta los errores cuando existan
@@ -36,12 +36,6 @@ function checkStatus(response: any){
 function parseJSON(response: Response) {
     return response.json();
 }
-
-// function delay(ms: number) {
-//     return function (x: any): Promise<any> {
-//         return new Promise((resolve) => setTimeout(() => resolve(x), ms));
-//     }
-// }
 
 function convertToProjectModels(data: any[]): Project[] {
     let projects: Project[] = data.map(convertToProjectModel);
@@ -93,7 +87,7 @@ const projectAPI = {
             .then(convertToProjectModel);
     },
     post(project: Project) {
-        return fetch(`${backendUrl}`, {
+        return fetch(`${url}`, {
             method: 'POST',
             body: JSON.stringify(project),
             headers: {
