@@ -37,9 +37,13 @@ function parseJSON(response: Response) {
     return response.json();
 }
 
-function convertToProjectModels(data: any[]): Project[] {
-    let projects: Project[] = data.map(convertToProjectModel);
-    return projects;
+function convertToProjectModels(data: any): Project[] {
+    // asegura de que `projectsData` exista y sea un array
+    if(!data || !Array.isArray(data.projectsData)) {
+        console.warn('Unexpected data structure: ', data);
+        return [];
+    }
+    return data.projectsData.map(convertToProjectModel);
 }
 
 function convertToProjectModel(item: any): Project {

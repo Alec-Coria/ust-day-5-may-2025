@@ -2,7 +2,7 @@ import { Query, Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res
 import { ProjectDTO } from 'src/project/dto/ProjectDTO';
 import { ProjectService } from '../service/project.service';
 
-@Controller('project')
+@Controller('projects')
 export class ProjectController {
     constructor(private readonly projectService: ProjectService) { }
 

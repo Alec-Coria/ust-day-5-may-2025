@@ -21,9 +21,20 @@ export class ProjectService {
         return existingProject;
     }
 
-    async getAllProjects(): Promise<IProject[]> {
-        const projectData = await this.projectModel.find();
-        if (!projectData || projectData.length == 0) {
+    // trae todos los proyectos por paginacion
+    async getAllProjects(
+        page: number,
+        limit: number,
+        sort: string,
+    ): Promise<IProject[]> {
+        const skip = (page - 1) * limit; // calcula cuantos documnetos saltar para la paginacion
+
+        const projectData = await this.projectModel
+            .find()
+            .sort({ [sort]: 1 }) //ordenar ascendente por el campo sort
+            .skip(skip)
+            .limit(limit);
+        if (!projectData || projectData.length === 0) {
             throw new NotFoundException('Projects data not found!');
         }
         return projectData;
