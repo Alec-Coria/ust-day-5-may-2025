@@ -1,5 +1,6 @@
 import { useProjects } from './projectHooks';
 import ProjectList from './ProjectList';
+import { Toaster } from 'react-hot-toast';
 
 function ProjectsPage() {
   const {
@@ -22,6 +23,7 @@ function ProjectsPage() {
           {isFetching && !isPending && (
             <span className="toast">Refreshing...</span>
           )}
+          <Toaster position = "top-center" />
           <ProjectList projects={data} />
           <div className="row">
             <div className="col-sm-4">Current page: {page + 1}</div>

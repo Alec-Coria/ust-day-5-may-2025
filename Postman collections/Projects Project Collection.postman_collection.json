@@ -1,0 +1,149 @@
+{
+	"info": {
+		"_postman_id": "1afce534-9ac8-4a0b-a34c-98a3633cc1fe",
+		"name": "Projects Project Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45000601",
+		"_collection_link": "https://alec-848554.postman.co/workspace/Alec's-Workspace~1b44d15f-1db1-4b0f-81cb-96ec27df24f4/collection/45000601-1afce534-9ac8-4a0b-a34c-98a3633cc1fe?action=share&source=collection_link&creator=45000601"
+	},
+	"item": [
+		{
+			"name": "Create Project",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\" \",\r\n    \"description\":\"Project X Y Z\",\r\n    \"imageUrl\":\"/assets/placeimg_500_300_arch1.jpg\",\r\n    \"contractTypeId\": 1,\r\n    \"budget\":9000300,\r\n    \"isActive\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/projects",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"projects"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Projects",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/projects?_page=1&_limit=10&_sort=name",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"projects"
+					],
+					"query": [
+						{
+							"key": "_page",
+							"value": "1"
+						},
+						{
+							"key": "_limit",
+							"value": "10"
+						},
+						{
+							"key": "_sort",
+							"value": "name"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find By Id",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/projects/6836236e079c53e40d2ce46a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"projects",
+						"6836236e079c53e40d2ce46a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Project",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"_id\":\"68374417a35dd167c5802ada\",\r\n    \"name\":\"PROJECT X\",\r\n    \"description\":\"Project X Y Z\",\r\n    \"imageUrl\":\"/assets/placeimg_500_300_arch1.jpg\",\r\n    \"contractTypeId\": 1,\r\n    \"budget\":9000300,\r\n    \"isActive\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/projects",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"projects"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Project",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/projects/68376ccca35dd167c5802b0b",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"projects",
+						"68376ccca35dd167c5802b0b"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

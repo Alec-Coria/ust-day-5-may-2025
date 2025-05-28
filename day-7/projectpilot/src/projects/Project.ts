@@ -1,5 +1,5 @@
 export class Project {
-  id: number | undefined;
+  _id: string | undefined;
   name: string = '';
   description: string = '';
   imageUrl: string = '';
@@ -8,12 +8,12 @@ export class Project {
   budget: number = 0;
   isActive: boolean = false;
   get isNew(): boolean {
-    return this.id === undefined;
+    return this._id === undefined;
   }
 
   constructor(initializer?: any) {
     if (!initializer) return;
-    if (initializer.id) this.id = initializer.id;
+    if (initializer._id) this._id = initializer._id;
     if (initializer.name) this.name = initializer.name;
     if (initializer.description) this.description = initializer.description;
     if (initializer.imageUrl) this.imageUrl = initializer.imageUrl;

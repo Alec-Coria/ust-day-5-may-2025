@@ -2,6 +2,7 @@ import type { SyntheticEvent } from 'react';
 import { useState } from 'react';
 import { Project } from './Project';
 import { useSaveProject } from './projectHooks';
+import toast from 'react-hot-toast';
 
 interface ProjectFormProps{
   project: Project;
@@ -22,6 +23,17 @@ function ProjectForm({
     '/assets/placeimg_500_300_arch5.jpg',
   ]
 
+  //objeto reutilizable para limpiar el form cuando sea exitoso el creado
+  const emptyProject = new Project({
+    _id: '',
+    name: '',
+    description: '',
+    budget: 0,
+    isActive: false,
+    imageUrl: '',
+    contractTypeId: 0
+  })
+
   //Manejo de project en state(Hook), a traves de props dentro del form
   const [project, setProject] = useState(initialProject);
 
@@ -32,6 +44,8 @@ function ProjectForm({
     budget:''
   });
 
+  //Mutate es la funcion para ejecutar la mutacion en projectHooks
+  //isPending indica si el proceso esta en progreso
   const { mutate: saveProject, isPending } = useSaveProject();
 
   const handleSubmit = (event: SyntheticEvent) => {
@@ -43,9 +57,24 @@ function ProjectForm({
       //selecciona una imagen al azar de assets y la pone en el proyecto que se esta creando
       //contractTypeId hardcodeado para insertar nuevo proyecto
       const projectWithRandomImage = new Project ({ ...project, imageUrl: getRandomImage(), contractTypeId: 1 });
-      saveProject(projectWithRandomImage);
+      saveProject(projectWithRandomImage, {
+            onSuccess: () => {
+                setProject(emptyProject);
+                toast.success(`Project ${project.name} created successfully!`);
+            },
+            onError:(error: any) => {
+                toast.error(error.message || `Error creating project ${project.name}`);
+            }
+        });
     } else {
-      saveProject(project);
+      saveProject(project, {
+            onSuccess: () => {
+                toast.success(`Project ${project.name} updated successfully!`);
+            },
+            onError:(error: any) => {
+                toast.error(error.message || `Error updating project ${project.name}`);
+            }
+        });
     }
   };
 
@@ -188,12 +217,14 @@ function ProjectForm({
           {/* Al estar dentro de un form, cualquier boton al que no se le especifice "type" sera por defecto "submit"*/}
           {/* Es decir, si se le da clic al boton, se enviara el formulario (inferido por HTML)*/}
             <button className="primary bordered medium">
-              {isNew ? 'Create' : 'Save'}
+              <span role="img" aria-label="add">➕</span>
+              {isNew ? 'Add' : 'Save'}
             </button>
             <span />
             {!isNew && (
               <button type="button" className="bordered medium" onClick={onCancel}>
-                  cancel
+                <span role="img" aria-label="cancel">❌</span>
+                Cancel
               </button>
             )}
         </div>
