@@ -24,7 +24,7 @@ function ProjectList({ projects }: ProjectListProps) {
     return (
         <div className="row">
             {projects.map((project) => (
-                <div key={project.id} className="cols-sm">
+                <div key={project._id} className="cols-sm">
                     {/* Uso de state (Hook) para renderizar un componente u otro de acuerdo a condicion ternaria */}
                     {/* Click en edit cambia uno u otro*/}
                     {project === projectBeingEdited ? (

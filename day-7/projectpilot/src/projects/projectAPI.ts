@@ -68,7 +68,7 @@ const projectAPI = {
             });
     },
     put(project: Project) {
-        return fetch(`${url}/${project.id}`, {
+        return fetch(`${url}/${project._id}`, {
             method: 'PUT',
             body: JSON.stringify(project),
             headers: {
@@ -84,11 +84,16 @@ const projectAPI = {
                 );
             })
     },
-    find(id: number) {
+    find(id: string) {
         return fetch(`${url}/${id}`)
             .then(checkStatus)
             .then(parseJSON)
-            .then(convertToProjectModel);
+            .then((data) => {
+                if (!data || !data.existingProject) {
+                    throw new Error("Invalid response structure from backend");
+                }
+                return convertToProjectModel(data.existingProject)
+            })
     },
     post(project: Project) {
         return fetch(`${url}`, {

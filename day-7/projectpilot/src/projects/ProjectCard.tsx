@@ -20,7 +20,7 @@ function ProjectCard(props: ProjectCardProps) {
         <div className="card">
           <img src={project.imageUrl} alt={project.name} />
           <section className="section dark">
-            <Link to={'/projects/' + project.id}> 
+            <Link to={'/projects/' + project._id}> 
               <h5 className="strong">
                 <strong>{project.name}</strong>
               </h5>
