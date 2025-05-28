@@ -1,14 +1,17 @@
-import { IsBoolean, IsDate, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsNumber, IsString, MaxLength, Validate } from "class-validator";
+import { NoWhitespaceConstraint } from "../utils/NoWhitespaceConstraint";
 
 export class ProjectDTO {
   @IsString()
   @MaxLength(100)
   @IsNotEmpty()
+  @Validate(NoWhitespaceConstraint)
   readonly name: string;
 
   @IsString()
   @MaxLength(2000)
   @IsNotEmpty()
+  @Validate(NoWhitespaceConstraint)
   readonly description: string;
 
   @IsString()

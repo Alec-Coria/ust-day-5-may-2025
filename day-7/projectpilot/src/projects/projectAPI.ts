@@ -112,6 +112,19 @@ const projectAPI = {
                 );
             })
     },
+    delete(project: Project) {
+        return fetch(`${url}/${project._id}`, {
+            method: 'DELETE'
+        })
+            .then(checkStatus)
+            .then(parseJSON)
+            .catch((error) => {
+                console.log('log client error' + error);
+                throw new Error(
+                    `There was an error deleting the project ${project.name}. Please try again.`
+                );
+            })
+    }
 };
 
 export { projectAPI };

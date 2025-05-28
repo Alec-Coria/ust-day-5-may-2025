@@ -8,11 +8,12 @@ function formatDescription(description: string): string {
 interface ProjectCardProps {
     project: Project;
     onEdit: (project: Project) => void;
+    onDelete: (project: Project) => void;
 }
 
 //Componente individual para Card
 function ProjectCard(props: ProjectCardProps) {
-    const { project, onEdit } = props;
+    const { project, onEdit, onDelete } = props;
     const handleEditClick = (projectBeingEdited: Project) => {
         onEdit(projectBeingEdited);
     }
@@ -32,8 +33,16 @@ function ProjectCard(props: ProjectCardProps) {
                     onClick={() => {
                         handleEditClick(project);
                     }}>
-              <span className="icon-edit"></span>
+              <span role="img" aria-label="edit">✏️</span>
               Edit
+            </button>
+            <button 
+                className="bordered"
+                    onClick={() => {
+                        onDelete(project);
+                    }}>
+              <span role="img" aria-label="delete">🗑️</span>
+              Delete
             </button>
           </section>
         </div>
