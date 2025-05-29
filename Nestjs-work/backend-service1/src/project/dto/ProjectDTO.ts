@@ -1,8 +1,9 @@
-import { IsBoolean, IsNotEmpty, IsNumber, IsString, MaxLength, Validate } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsNumber, IsString, MaxLength, MinLength, Validate } from "class-validator";
 import { NoWhitespaceConstraint } from "../utils/NoWhitespaceConstraint";
 
 export class ProjectDTO {
   @IsString()
+  @MinLength(3)
   @MaxLength(100)
   @IsNotEmpty()
   @Validate(NoWhitespaceConstraint)
