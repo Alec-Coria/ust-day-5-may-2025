@@ -24,7 +24,7 @@ import * as Joi from 'joi';
       },
     }),
   //MongooseModule.forRoot('mongodb://localhost:27017',{dbName: 'projectsdb'}),
-  MongooseModule.forRoot(process.env.MONGODB_URI),
+  MongooseModule.forRoot(process.env.MONGODB_URI.toString()),
   AuthModule,
   ProjectModule,
   UserModule],
