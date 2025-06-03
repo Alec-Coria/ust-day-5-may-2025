@@ -1,4 +1,4 @@
-export class Project {
+export class User {
   _id: string | undefined;
   username: string = '';
   email: string = '';

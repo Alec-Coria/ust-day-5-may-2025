@@ -4,6 +4,7 @@ import ProjectPage from './projects/ProjectPage';
 import NewProjectPage from './projects/NewProjectPage';
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router';
 import HomePage from './home/HomePage';
+import LoginPage from './auth/LoginPage';
 
 function App() {
 
@@ -13,7 +14,7 @@ function App() {
         <span className="logo">
           <img src="/assets/logo-3.svg" alt="logo" width="49" height="99" />
         </span>
-        <NavLink to="/" className="button rounded">
+        <NavLink to="/home" className="button rounded">
           <span className="icon-home"></span>
           Home
         </NavLink>
@@ -26,7 +27,8 @@ function App() {
       </header>
       <div className="container">
         <Routes>
-          <Route path="/" element={<HomePage/>} />
+          <Route path="/" element={<LoginPage/>}/>
+          <Route path="/home" element={<HomePage/>} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/projects/:id" element={<ProjectPage />}/>
           <Route path="/create-project" element={<NewProjectPage />}/>

@@ -1,7 +1,9 @@
-import { Query, Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from '@nestjs/common';
+import { Query, Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { ProjectDTO } from 'src/project/dto/ProjectDTO';
 import { ProjectService } from '../service/project.service';
+import { AccessTokenGuard } from 'src/common/gaurds/gaurd.access_token';
 
+@UseGuards(AccessTokenGuard)
 @Controller('projects')
 export class ProjectController {
     constructor(private readonly projectService: ProjectService) { }
