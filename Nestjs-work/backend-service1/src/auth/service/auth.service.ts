@@ -30,8 +30,8 @@ export class AuthService {
       ...createUserDto,
       password: hash,
     });
-    const tokens = await this.getTokens(newUser._id, newUser.email);
-    await this.updateRefreshToken(newUser._id, tokens.refreshToken);
+    const tokens = await this.getTokens(newUser._id.toString(), newUser.email);
+    await this.updateRefreshToken(newUser._id.toString(), tokens.refreshToken);
     return {
       ...tokens,
       name: newUser.name,
@@ -44,11 +44,11 @@ export class AuthService {
     // Check if user exists
     const user = await this.userService.findByEmail(data.email);
     if (!user) throw new BadRequestException('User does not exist');
-    const passwordMatches = argon2.verify(user.password, data.password);
+    const passwordMatches = await argon2.verify(user.password, data.password);
     if (!passwordMatches)
       throw new BadRequestException('Password is incorrect');
-    const tokens = await this.getTokens(user._id, user.email);
-    await this.updateRefreshToken(user._id, tokens.refreshToken);
+    const tokens = await this.getTokens(user._id.toString(), user.email);
+    await this.updateRefreshToken(user._id.toString(), tokens.refreshToken);
     return {
       ...tokens,
       name: user.name,
