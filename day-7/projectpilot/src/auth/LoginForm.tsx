@@ -88,7 +88,7 @@ function LoginForm({ onLoginSuccess, onNavigateToRegister }: LoginFormProps) {
               name="password"
               value={credentials.password}
               onChange={handleChange}
-              placeholder="Your password"
+              placeholder="Password"
             />
             {errors.password && (
               <div className="alert alert-danger mt-1">{errors.password}</div>
