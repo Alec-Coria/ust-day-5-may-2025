@@ -19,7 +19,7 @@ async function bootstrap() {
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
-  app.useGlobalInterceptors(new TransformInterceptor());
+  //app.useGlobalInterceptors(new TransformInterceptor());
   app.enableCors();
   await app.listen(process.env.PORT ?? 3001);
 }

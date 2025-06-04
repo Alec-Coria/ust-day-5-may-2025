@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const queryClient = new QueryClient();
 
