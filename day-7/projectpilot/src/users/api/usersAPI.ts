@@ -128,3 +128,25 @@ const usersAPI = {
 };
 
 export { usersAPI };
+
+// **Sugerencia:** Crea un nuevo archivo src/users/userAPI.ts si la lógica de usuario crece.
+// Por ahora, se puede mantener aquí para simplificar, pero considera separarlo.
+// const userAPI = {
+//   /**
+//    * Obtiene los detalles de un usuario por su ID.
+//    * @param id El ID del usuario.
+//    * @param accessToken El token de acceso para la ruta protegida.
+//    * @returns Los datos del usuario.
+//    */
+//   async getUserById(id: string, accessToken: string): Promise<any> {
+//     const response = await fetch(`${usersUrl}/${id}`, {
+//       method: 'GET',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         Authorization: `Bearer ${accessToken}`, // Ruta protegida
+//       },
+//     });
+//     const checkedResponse = checkStatus(response);
+//     return await parseJSON(checkedResponse);
+//   },
+// };

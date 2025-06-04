@@ -1,121 +1,102 @@
-import { User } from '../../users/User';
-import type { Auth } from '../Auth';
-// const baseUrl = 'http://localhost:4000';
-// Backend URL para NestJS
-const baseUrl = 'http://localhost:3001'
-const url = `${baseUrl}/auth`;
+// src/auth/authAPI.ts
 
-function translateStatusToErrorMessage(status: number) {
-    //Interpreta los errores cuando existan
-    switch (status) {
-        case 401:
-            return 'Please login again.';
-        case 403:
-            return 'You do not have permission to view the User(s).';
-        default:
-            return 'Auth failed. Please try again.';
-    }
+// Asegúrate de que estas funciones utilitarias estén en un archivo compartido, por ejemplo, src/utils/apiUtils.ts
+// Así podrás importarlas y reutilizarlas en projectAPI.ts también.
+import {
+  //translateStatusToErrorMessage,
+  checkStatus,
+  parseJSON,
+} from '../../utils/apiUtils';
+import { Auth } from '../Auth';
+
+const baseUrl = 'http://localhost:3001';
+
+export interface UserCredentials {
+  email: string;
+  password: string;
 }
 
-function checkStatus(response: any){
-    //Recupera el status de la peticion y la interpreta
-    if (response.ok){
-        return response;
-    } else {
-        const httpErrorInfo = {
-            status: response.status,
-            statusText: response.statusText,
-            url: response.url,
-        };
-        console.log(`log server http error: ${JSON.stringify(httpErrorInfo)}`);
-        //manda llamar el traductor de errores, solo envia el status
-        let errorMessage = translateStatusToErrorMessage(httpErrorInfo.status);
-        throw new Error(errorMessage);
-    }
+export interface UserRegistration extends UserCredentials {
+  name: string;
 }
 
-function parseJSON(response: Response) {
-    return response.json();
-}
-
-// function convertToUserModels(data: any): User[] {
-//     // asegura de que `UsersData` exista y sea un array
-//     if(!data || !Array.isArray(data.UsersData)) {
-//         console.warn('Unexpected data structure: ', data);
-//         return [];
-//     }
-//     return data.UsersData.map(convertToUserModel);
-// }
-
-function convertToUserModel(item: any): User {
-    return new User(item);
-}
+const authUrl = `${baseUrl}/auth`;
+//const usersUrl = `${baseUrl}/users`; // URL para operaciones relacionadas con usuarios (find by id)
 
 const authAPI = {
-    put(user: User) {
-        return fetch(`${url}/${user._id}`, {
-            method: 'PUT',
-            body: JSON.stringify(user),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })//.then(delay(2000))
-            .then(checkStatus)
-            .then(parseJSON)
-            .catch((error) => {
-                console.log('log client error' + error);
-                throw new Error(
-                    `There was an error updating the User ${user.username}. Please try again.`
-                );
-            })
-    },
-    find(id: string) {
-        return fetch(`${url}/${id}`)
-            .then(checkStatus)
-            .then(parseJSON)
-            .then((data) => {
-                if (!data || !data.existingUser) {
-                    throw new Error("Invalid response structure from backend");
-                }
-                return convertToUserModel(data.existingUser)
-            })
-    },
-    //sign up
-    signUp(user: User) {
-        return fetch(`${url}/singup`, {
-            method: 'POST',
-            body: JSON.stringify(user),
-            headers: {
-                'Content-type': 'application/json'
-            }
-        })
-            .then(checkStatus)
-            .then(parseJSON)
-            .catch((error) => {
-                console.log('log client error' + error);
-                throw new Error(
-                    `There was an error creating the user ${user.username}. Please try again.`
-                );
-            })
-    },
-    //sign in
-    signIn(auth: Auth) {
-        return fetch(`${url}/singin`, {
-            method: 'POST',
-            body: JSON.stringify(auth),
-            headers: {
-                'Content-type': 'application/json',
-            }
-        })
-            .then(checkStatus)
-            .then(parseJSON)
-            .catch((error) => {
-                console.log('log client error' + error);
-                throw new Error(
-                    `There was an error logging. Please try again.`
-                );
-            })
-    },
+  /**
+   * Registra un nuevo usuario.
+   * @param user Datos del usuario para el registro (nombre, email, contraseña).
+   * @returns La respuesta de autenticación con tokens y datos del usuario.
+   */
+  async signup(user: UserRegistration): Promise<Auth> {
+    const response = await fetch(`${authUrl}/signup`, {
+      method: 'POST',
+      body: JSON.stringify(user),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const checkedResponse = checkStatus(response);
+    return await parseJSON(checkedResponse);
+  },
+
+  /**
+   * Inicia sesión de un usuario existente.
+   * @param credentials Credenciales del usuario (email, contraseña).
+   * @returns La respuesta de autenticación con tokens y datos del usuario.
+   */
+  async signin(credentials: UserCredentials): Promise<Auth> {
+    const response = await fetch(`${authUrl}/signin`, {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const checkedResponse = checkStatus(response);
+    return await parseJSON(checkedResponse);
+  },
+
+  /**
+   * Refresca los tokens de acceso y refresco.
+   * @param refreshToken El token de refresco actual.
+   * @returns La nueva respuesta de autenticación con tokens actualizados.
+   */
+  async refresh(refreshToken: string): Promise<Auth> {
+    const response = await fetch(`${authUrl}/refresh`, {
+      method: 'POST',
+      body: JSON.stringify({ refreshToken }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const checkedResponse = checkStatus(response);
+    return await parseJSON(checkedResponse);
+  },
+
+  /**
+   * Cierra la sesión de un usuario.
+   * @param accessToken El token de acceso del usuario.
+   * @returns Verdadero si la sesión se cerró exitosamente.
+   */
+  async logout(accessToken: string): Promise<boolean> {
+    const response = await fetch(`${authUrl}/logout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`, // Envía el token de acceso para cerrar sesión
+      },
+    });
+    // El logout normalmente devuelve un estado de éxito o un simple 'true'.
+    // Asumimos que parseJSON manejará cualquier respuesta de éxito como 'true'.
+    const checkedResponse = checkStatus(response);
+    return await parseJSON(checkedResponse);
+  },
 };
 
 export { authAPI };
+
+// --- src/utils/apiUtils.ts (Ejemplo de cómo se vería el archivo de utilidades) ---
+// Idealmente, estas funciones deberían estar en un archivo separado para ser reutilizables.
+// Por ahora, se incluyen aquí para que veas el código completo de authAPI.ts.

@@ -1,208 +1,133 @@
-import React, { Component } from "react";
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
-import { isEmail } from "validator";
+import { type SyntheticEvent, useState } from 'react';
+import { useSignup } from './authHooks';
+import { type UserRegistration } from './api/authAPI';
 
-import AuthService from "../services/auth.service";
-
-const required = value => {
-  if (!value) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        This field is required!
-      </div>
-    );
-  }
-};
-
-const email = value => {
-  if (!isEmail(value)) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        This is not a valid email.
-      </div>
-    );
-  }
-};
-
-const vusername = value => {
-  if (value.length < 3 || value.length > 20) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        The username must be between 3 and 20 characters.
-      </div>
-    );
-  }
-};
-
-const vpassword = value => {
-  if (value.length < 6 || value.length > 40) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        The password must be between 6 and 40 characters.
-      </div>
-    );
-  }
-};
-
-export default class Register extends Component {
-  constructor(props) {
-    super(props);
-    this.handleRegister = this.handleRegister.bind(this);
-    this.onChangeUsername = this.onChangeUsername.bind(this);
-    this.onChangeEmail = this.onChangeEmail.bind(this);
-    this.onChangePassword = this.onChangePassword.bind(this);
-
-    this.state = {
-      username: "",
-      email: "",
-      password: "",
-      successful: false,
-      message: ""
-    };
-  }
-
-  onChangeUsername(e) {
-    this.setState({
-      username: e.target.value
-    });
-  }
-
-  onChangeEmail(e) {
-    this.setState({
-      email: e.target.value
-    });
-  }
-
-  onChangePassword(e) {
-    this.setState({
-      password: e.target.value
-    });
-  }
-
-  handleRegister(e) {
-    e.preventDefault();
-
-    this.setState({
-      message: "",
-      successful: false
-    });
-
-    this.form.validateAll();
-
-    if (this.checkBtn.context._errors.length === 0) {
-      AuthService.register(
-        this.state.username,
-        this.state.email,
-        this.state.password
-      ).then(
-        response => {
-          this.setState({
-            message: response.data.message,
-            successful: true
-          });
-        },
-        error => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-
-          this.setState({
-            successful: false,
-            message: resMessage
-          });
-        }
-      );
-    }
-  }
-
-  render() {
-    return (
-      <div className="col-md-12">
-        <div className="card card-container">
-          <img
-            src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-            alt="profile-img"
-            className="profile-img-card"
-          />
-
-          <Form
-            onSubmit={this.handleRegister}
-            ref={c => {
-              this.form = c;
-            }}
-          >
-            {!this.state.successful && (
-              <div>
-                <div className="form-group">
-                  <label htmlFor="username">Username</label>
-                  <Input
-                    type="text"
-                    className="form-control"
-                    name="username"
-                    value={this.state.username}
-                    onChange={this.onChangeUsername}
-                    validations={[required, vusername]}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="email">Email</label>
-                  <Input
-                    type="text"
-                    className="form-control"
-                    name="email"
-                    value={this.state.email}
-                    onChange={this.onChangeEmail}
-                    validations={[required, email]}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="password">Password</label>
-                  <Input
-                    type="password"
-                    className="form-control"
-                    name="password"
-                    value={this.state.password}
-                    onChange={this.onChangePassword}
-                    validations={[required, vpassword]}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <button className="btn btn-primary btn-block">Sign Up</button>
-                </div>
-              </div>
-            )}
-
-            {this.state.message && (
-              <div className="form-group">
-                <div
-                  className={
-                    this.state.successful
-                      ? "alert alert-success"
-                      : "alert alert-danger"
-                  }
-                  role="alert"
-                >
-                  {this.state.message}
-                </div>
-              </div>
-            )}
-            <CheckButton
-              style={{ display: "none" }}
-              ref={c => {
-                this.checkBtn = c;
-              }}
-            />
-          </Form>
-        </div>
-      </div>
-    );
-  }
+interface RegisterFormProps {
+  onRegisterSuccess?: () => void;
+  onNavigateToLogin?: () => void;
 }
+
+function RegisterForm({ onRegisterSuccess, onNavigateToLogin }: RegisterFormProps) {
+  const [newUser, setNewUser] = useState<UserRegistration>({
+    name: '',
+    email: '',
+    password: '',
+  });
+  const [errors, setErrors] = useState({
+    name: '',
+    email: '',
+    password: '',
+  });
+
+  const { mutate: signup, isPending } = useSignup();
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setNewUser((prev: UserRegistration) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: '' })); // Clear error on change
+  };
+
+  const validate = (data: UserRegistration) => {
+    let newErrors: typeof errors = { name: '', email: '', password: '' };
+    if (!data.name.trim()) {
+      newErrors.name = 'El nombre es requerido.';
+    } else if (data.name.trim().length < 3) {
+      newErrors.name = 'El nombre debe tener al menos 3 caracteres.';
+    }
+
+    if (!data.email.trim()) {
+      newErrors.email = 'El email es requerido.';
+    } else if (!/\S+@\S+\.\S+/.test(data.email)) {
+      newErrors.email = 'El email no es válido.';
+    }
+
+    if (!data.password.trim()) {
+      newErrors.password = 'La contraseña es requerida.';
+    } else if (data.password.length < 6) {
+      newErrors.password = 'La contraseña debe tener al menos 6 caracteres.';
+    }
+    return newErrors;
+  };
+
+  const handleSubmit = (event: SyntheticEvent) => {
+    event.preventDefault();
+    const newErrors = validate(newUser);
+    if (newErrors.name || newErrors.email || newErrors.password) {
+      setErrors(newErrors);
+      return;
+    }
+
+    signup(newUser, {
+      onSuccess: () => {
+        if (onRegisterSuccess) {
+          onRegisterSuccess();
+        }
+      },
+    });
+  };
+
+  return (
+    <form className="input-group vertical" onSubmit={handleSubmit}>
+      {isPending && <span className="toast">Registrando usuario...</span>}
+      <h2>Registrarse</h2>
+      <label htmlFor="name">Nombre</label>
+      <input
+        type="text"
+        name="name"
+        placeholder="Tu nombre"
+        value={newUser.name}
+        onChange={handleChange}
+      />
+      {errors.name && (
+        <div className="card error">
+          <p>{errors.name}</p>
+        </div>
+      )}
+
+      <label htmlFor="email">Email</label>
+      <input
+        type="email"
+        name="email"
+        placeholder="tu@email.com"
+        value={newUser.email}
+        onChange={handleChange}
+      />
+      {errors.email && (
+        <div className="card error">
+          <p>{errors.email}</p>
+        </div>
+      )}
+
+      <label htmlFor="password">Contraseña</label>
+      <input
+        type="password"
+        name="password"
+        placeholder="tu contraseña"
+        value={newUser.password}
+        onChange={handleChange}
+      />
+      {errors.password && (
+        <div className="card error">
+          <p>{errors.password}</p>
+        </div>
+      )}
+
+      <div className="input-group">
+        <button type="submit" className="primary bordered medium">
+          <span role="img" aria-label="register">✅</span>
+          Registrarse
+        </button>
+      </div>
+      {onNavigateToLogin && (
+        <p className="mt-2">
+          ¿Ya tienes una cuenta?{' '}
+          <button type="button" className="link-button" onClick={onNavigateToLogin}>
+            Inicia sesión aquí
+          </button>
+        </p>
+      )}
+    </form>
+  );
+}
+
+export default RegisterForm;
