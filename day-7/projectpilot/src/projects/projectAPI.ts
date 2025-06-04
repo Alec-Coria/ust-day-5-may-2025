@@ -5,6 +5,14 @@ import { checkStatus, parseJSON } from '../utils/apiUtils';
 const baseUrl = 'http://localhost:3001'
 const url = `${baseUrl}/projects`;
 
+function getAuthHeaders(): HeadersInit {
+  const token = localStorage.getItem('accessToken');
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+}
+
 function convertToProjectModels(data: any): Project[] {
     // asegura de que `projectsData` exista y sea un array
     if(!data || !Array.isArray(data.projectsData)) {
@@ -38,7 +46,10 @@ const projectAPI = {
     // },
 
     async get(page = 1, limit = 10) {
-        const response = await fetch(`${url}?_page=${page}&_limit=${limit}&_sort=name`);
+        const response = await fetch(
+            `${url}?_page=${page}&_limit=${limit}&_sort=name`,
+            { headers: getAuthHeaders() }
+        );
         // const delayedResponse = await delay(2000)(response);
         
         const checkedResponse = checkStatus(response); // 'response' es un objeto Response
@@ -50,20 +61,21 @@ const projectAPI = {
         const response = await fetch(`${url}/${project._id}`, {
             method: 'PUT',
             body: JSON.stringify(project),
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            headers: getAuthHeaders(),
         });
         const checkedResponse = checkStatus(response);
         return await parseJSON(checkedResponse);
     },
     
     async find(id: string) {
-        const response = await fetch(`${url}/${id}`);
+        const response = await fetch(
+            `${url}/${id}`,
+            { headers: getAuthHeaders() }
+        );
         const checkedResponse = checkStatus(response);
         const data = await parseJSON(checkedResponse);
         if (!data || !data.existingProject) {
-            throw new Error("Estructura de respuesta inválida desde el backend");
+            throw new Error('Unexpected data structure');
         }
         return convertToProjectModel(data.existingProject);
     },
@@ -72,9 +84,7 @@ const projectAPI = {
         const response = await fetch(`${url}`, {
             method: 'POST',
             body: JSON.stringify(project),
-            headers: {
-                'Content-type': 'application/json'
-            }
+            headers: getAuthHeaders(),
         });
         const checkedResponse = checkStatus(response);
         return await parseJSON(checkedResponse);
@@ -82,71 +92,12 @@ const projectAPI = {
     
     async delete(project: Project) {
         const response = await fetch(`${url}/${project._id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: getAuthHeaders(),
         });
         const checkedResponse = checkStatus(response);
         return await parseJSON(checkedResponse);
     }
-
-
-    // put(project: Project) {
-    //     return fetch(`${url}/${project._id}`, {
-    //         method: 'PUT',
-    //         body: JSON.stringify(project),
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         }
-    //     })//.then(delay(2000))
-    //         .then(checkStatus)
-    //         .then(parseJSON)
-    //         .catch((error) => {
-    //             console.log('log client error' + error);
-    //             throw new Error(
-    //                 `There was an error updating the project ${project.name}. Please try again.`
-    //             );
-    //         })
-    // },
-    // find(id: string) {
-    //     return fetch(`${url}/${id}`)
-    //         .then(checkStatus)
-    //         .then(parseJSON)
-    //         .then((data) => {
-    //             if (!data || !data.existingProject) {
-    //                 throw new Error("Invalid response structure from backend");
-    //             }
-    //             return convertToProjectModel(data.existingProject)
-    //         })
-    // },
-    // post(project: Project) {
-    //     return fetch(`${url}`, {
-    //         method: 'POST',
-    //         body: JSON.stringify(project),
-    //         headers: {
-    //             'Content-type': 'application/json'
-    //         }
-    //     })
-    //         .then(checkStatus)
-    //         .then(parseJSON)
-    //         .catch((error) => {
-    //             console.log('log client error' + error);
-    //             throw new Error(
-    //                 `There was an error creating the project ${project.name}. Please try again.`
-    //             );
-    //         })
-    // },
-    // delete(project: Project) {
-    //     return fetch(`${url}/${project._id}`, {
-    //         method: 'DELETE'
-    //     })
-    //         .then(checkStatus)
-    //         .then(parseJSON)
-    //         .catch((error) => {
-    //             console.log('log client error' + error);
-    //             throw new Error(
-    //                 `There was an error deleting the project ${project.name}. Please try again.`
-    //             );
-    //         })
-    // }
 };
 
 export { projectAPI };

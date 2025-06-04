@@ -28,10 +28,10 @@ function LoginForm({ onLoginSuccess, onNavigateToRegister }: LoginFormProps) {
   const validate = (data: UserCredentials) => {
     let newErrors: typeof errors = { email: '', password: '' };
     if (!data.email.trim()) {
-      newErrors.email = 'El email es requerido.';
+      newErrors.email = 'Email is required.';
     }
     if (!data.password.trim()) {
-      newErrors.password = 'La contraseña es requerida.';
+      newErrors.password = 'Password is required.';
     }
     return newErrors;
   };
@@ -54,52 +54,66 @@ function LoginForm({ onLoginSuccess, onNavigateToRegister }: LoginFormProps) {
   };
 
   return (
-    <form className="input-group vertical" onSubmit={handleSubmit}>
-      {isPending && <span className="toast">Iniciando sesión...</span>}
-      <h2>Iniciar Sesión</h2>
-      <label htmlFor="email">Email</label>
-      <input
-        type="email"
-        name="email"
-        placeholder="tu@email.com"
-        value={credentials.email}
-        onChange={handleChange}
-      />
-      {errors.email && (
-        <div className="card error">
-          <p>{errors.email}</p>
-        </div>
-      )}
+    <div className="col-md-12">
+      <div className="card card-container">
+        <img
+          src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
+          alt="profile-img"
+          className="profile-img-card"
+        />
 
-      <label htmlFor="password">Contraseña</label>
-      <input
-        type="password"
-        name="password"
-        placeholder="tu contraseña"
-        value={credentials.password}
-        onChange={handleChange}
-      />
-      {errors.password && (
-        <div className="card error">
-          <p>{errors.password}</p>
-        </div>
-      )}
+        <form onSubmit={handleSubmit}>
+          <h2 className="text-center">Login</h2>
 
-      <div className="input-group">
-        <button type="submit" className="primary bordered medium">
-          <span role="img" aria-label="login">🚪</span>
-          Login
-        </button>
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              className="form-control"
+              name="email"
+              value={credentials.email}
+              onChange={handleChange}
+              placeholder="your@email.com"
+            />
+            {errors.email && (
+              <div className="alert alert-danger mt-1">{errors.email}</div>
+            )}
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              className="form-control"
+              name="password"
+              value={credentials.password}
+              onChange={handleChange}
+              placeholder="Password"
+            />
+            {errors.password && (
+              <div className="alert alert-danger mt-1">{errors.password}</div>
+            )}
+          </div>
+          
+          <div className="form-group">
+            <button type="submit" className="btn btn-primary btn-block" disabled={isPending}>
+              {isPending && <span className="spinner-border spinner-border-sm mr-2"></span>}
+              Login
+            </button>
+          </div>
+          
+          {onNavigateToRegister && (
+            <p className="mt-3 text-center">
+              Don't have an account?{' '}
+              <button type="button" className="btn btn-link" onClick={onNavigateToRegister}>
+                Sign up here
+              </button>
+            </p>
+          )}
+        </form>
       </div>
-      {onNavigateToRegister && (
-        <p className="mt-2">
-          ¿No tienes una cuenta?{' '}
-          <button type="button" className="link-button" onClick={onNavigateToRegister}>
-            Regístrate aquí
-          </button>
-        </p>
-      )}
-    </form>
+    </div>
+
   );
 }
 

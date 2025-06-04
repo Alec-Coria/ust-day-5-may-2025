@@ -14,7 +14,9 @@ export class ProjectService {
     }
 
     async updateProject(projectId: string, updateProjectDTO: ProjectDTO): Promise<IProject> {
-        const existingProject = await this.projectModel.findByIdAndUpdate(projectId, updateProjectDTO, { new: true });
+        const existingProject = await this.projectModel
+            .findByIdAndUpdate(projectId, updateProjectDTO, { new: true })
+            .lean(); //para que sea compatible con objetos de mongo para convertir sus objetos a objetos planos Javascript
         if(!existingProject) {
             throw new NotFoundException(`Project #${projectId} not found`);
         }
@@ -33,7 +35,8 @@ export class ProjectService {
             .find()
             .sort({ [sort]: 1 }) //ordenar ascendente por el campo sort
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .lean();
         if (!projectData || projectData.length === 0) {
             throw new NotFoundException('Projects data not found!');
         }
@@ -41,7 +44,7 @@ export class ProjectService {
     }
 
     async getProject(projectId: string): Promise<IProject> {
-        const existingProject = await this.projectModel.findById(projectId).exec();
+        const existingProject = await this.projectModel.findById(projectId).lean();
         if(!existingProject) {
             throw new NotFoundException(`Project #${projectId} not found`);
         }
@@ -49,7 +52,7 @@ export class ProjectService {
     }
 
     async deleteProject(projectId: string): Promise<IProject> {
-        const deletedProject = await this.projectModel.findByIdAndDelete(projectId);
+        const deletedProject = await this.projectModel.findByIdAndDelete(projectId).lean();
         if (!deletedProject) {
             throw new NotFoundException(`Project #${projectId} not found`);
         }

@@ -13,6 +13,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.76.2",
     "@tanstack/react-query-devtools": "^5.76.2",
+    "bootstrap": "^5.3.6",
     "mini.css": "^3.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

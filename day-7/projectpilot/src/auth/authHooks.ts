@@ -1,33 +1,27 @@
-// src/auth/authHooks.ts
-
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authAPI, type UserCredentials, type UserRegistration } from './api/authAPI';
 import { Auth } from './Auth';
 import toast from 'react-hot-toast';
 
-/**
- * Hook para la mutación de registro de usuario.
- */
+//Registro de usuario con mutation
 export function useSignup() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (user: UserRegistration) => authAPI.signup(user),
     onSuccess: (data: Auth) => {
-      // Almacenar tokens (localStorage, Context, Recoil, Redux, etc.)
+      // Almacenar tokens (localStorage)
       localStorage.setItem('accessToken', data.accessToken);
       localStorage.setItem('refreshToken', data.refreshToken);
-      toast.success('¡Registro exitoso! Sesión iniciada.');
-      queryClient.invalidateQueries({ queryKey: ['user'] }); // Invalida los datos del usuario para recargar
+      toast.success('Sign up success! Signed in...');
+      queryClient.invalidateQueries({ queryKey: ['user'] }); //Recarga las queries
     },
     onError: (error: any) => {
-      toast.error(error.message || 'Error al registrar usuario.');
+      toast.error(error.message || 'Error registering user.');
     },
   });
 }
 
-/**
- * Hook para la mutación de inicio de sesión.
- */
+ //Hook para la mutación de inicio de sesión.
 export function useSignin() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -36,11 +30,11 @@ export function useSignin() {
       // Almacenar tokens
       localStorage.setItem('accessToken', data.accessToken);
       localStorage.setItem('refreshToken', data.refreshToken);
-      toast.success('¡Inicio de sesión exitoso!');
+      toast.success('Login successful!');
       queryClient.invalidateQueries({ queryKey: ['user'] }); // Invalida los datos del usuario
     },
     onError: (error: any) => {
-      toast.error(error.message || 'Error al iniciar sesión. Verifica tus credenciales.');
+      toast.error(error.message || 'Login failed. Please check your credentials.');
     },
   });
 }
@@ -56,27 +50,12 @@ export function useLogout() {
       // Limpiar tokens
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
-      toast.success('Sesión cerrada correctamente.');
+      toast.success('Session closed successfully.');
       queryClient.invalidateQueries({ queryKey: ['user'] }); // Invalida los datos del usuario
-      queryClient.removeQueries({ queryKey: ['user'] }); // Opcional: remover completamente los datos del usuario de la caché
+      queryClient.removeQueries({ queryKey: ['user'] }); // Remover completamente los datos del usuario de la caché
     },
     onError: (error: any) => {
-      toast.error(error.message || 'Error al cerrar sesión.');
+      toast.error(error.message || 'Error logging out.');
     },
   });
 }
-
-// Hook para obtener detalles del usuario
-// export function useUser(id: string | null) {
-//     return useQuery({
-//         queryKey: ['user', id],
-//         queryFn: async () => {
-//             if (!id) throw new Error('ID de usuario no proporcionado.');
-//             const accessToken = localStorage.getItem('accessToken');
-//             if (!accessToken) throw new Error('No se encontró token de acceso.');
-//             return userAPI.getUserById(id, accessToken);
-//         },
-//         enabled: !!id && !!localStorage.getItem('accessToken'), // Solo se ejecuta si hay ID y token
-//         staleTime: 5 * 60 * 1000, // Los datos se consideran "frescos" por 5 minutos
-//     });
-// }

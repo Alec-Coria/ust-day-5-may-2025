@@ -1,18 +1,15 @@
 // src/auth/AuthPage.tsx
-
 import { useState } from 'react';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
-import { useNavigate } from 'react-router-dom'; // Asegúrate de que este import sea de 'react-router-dom'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-function AuthPage() {
+interface AuthPageProps {
+  onLoginSuccess: () => void;
+}
+
+function AuthPage({ onLoginSuccess }: AuthPageProps) {
   const [showRegister, setShowRegister] = useState(false);
-  const navigate = useNavigate();
-
-  const handleAuthSuccess = () => {
-    // Después de un login/registro exitoso, redirige al usuario a la página de proyectos
-    navigate('/projects');
-  };
 
   return (
     <div className="container">
@@ -20,12 +17,12 @@ function AuthPage() {
         <div className="col-md-6">
           {showRegister ? (
             <RegisterForm
-              onRegisterSuccess={handleAuthSuccess}
+              onRegisterSuccess={onLoginSuccess}
               onNavigateToLogin={() => setShowRegister(false)}
             />
           ) : (
             <LoginForm
-              onLoginSuccess={handleAuthSuccess}
+              onLoginSuccess={onLoginSuccess}
               onNavigateToRegister={() => setShowRegister(true)}
             />
           )}
