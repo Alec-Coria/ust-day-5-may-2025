@@ -5,7 +5,7 @@ import {
 } from '../../utils/apiUtils';
 import { Auth } from '../Auth';
 
-const baseUrl = 'http://localhost:3000';
+const baseUrl = 'http://localhost:3001';
 
 export interface UserCredentials {
   email: string;
