@@ -2,7 +2,7 @@ import { Project } from './Project';
 import { checkStatus, parseJSON } from '../utils/apiUtils';
 // const baseUrl = 'http://localhost:4000';
 // Backend URL para NestJS
-const baseUrl = 'http://localhost:3000'
+const baseUrl = 'http://localhost:3001'
 const url = `${baseUrl}/projects`;
 
 function getAuthHeaders(): HeadersInit {
