@@ -9,7 +9,8 @@ async function bootstrap() {
   //app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist:true
+      whitelist:true,
+      //trasnform:true //revisar
     })
   );
     const config = new DocumentBuilder()
@@ -21,6 +22,6 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
   app.enableCors();
-  await app.listen(process.env.PORT ?? 3001);
+  await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

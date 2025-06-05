@@ -9,8 +9,9 @@ export class ProjectController {
     constructor(private readonly projectService: ProjectService) { }
 
     @Post()
-    async createProject(@Res() response, @Body() createProjectDTO: ProjectDTO) {
+    async createProject(@Res({ passthrough: true}) response, @Body() createProjectDTO: ProjectDTO) {
         try {
+            response.setHeader('X-Custom', 'value');
             const newProject = await this.projectService.createProject(createProjectDTO);
             return response.status(HttpStatus.CREATED).json({
                 message: 'Project has been created successfully',
@@ -26,10 +27,11 @@ export class ProjectController {
     }
 
         @Put('/:id')
-    async updateProject(@Res() response,
+    async updateProject(@Res({ passthrough: true}) response,
         @Param('id') projectId: string,
         @Body() updateProjectDto: ProjectDTO) {
         try {
+            response.setHeader('X-Custom', 'value');
             const existingProject = await this.projectService.updateProject(projectId, updateProjectDto);
             return response.status(HttpStatus.OK).json({
                 message: 'Project has been successfully updated',
@@ -46,8 +48,9 @@ export class ProjectController {
         @Query('_page') page = 1,
         @Query('_limit') limit = 10,
         @Query('_sort') sort = 'name',
-        @Res() response) {
+        @Res({ passthrough: true}) response) {
         try {
+            response.setHeader('X-Custom', 'value');
             const pageNumber = Number(page);
             const limitNumber = Number(limit);
 
@@ -62,7 +65,7 @@ export class ProjectController {
     }
 
     @Get('/:id')
-    async getProject(@Res() response, @Param('id') projectId: string) {
+    async getProject(@Res({ passthrough: true}) response, @Param('id') projectId: string) {
         try {
             const existingProject = await this.projectService.getProject(projectId);
             return response.status(HttpStatus.OK).json({
@@ -75,7 +78,7 @@ export class ProjectController {
     }
 
     @Delete('/:id')
-    async deleteStudent(@Res() response, @Param('id') projectId: string) {
+    async deleteStudent(@Res({ passthrough: true}) response, @Param('id') projectId: string) {
         try {
             const deletedProject = await this.projectService.deleteProject(projectId);
             return response.status(HttpStatus.OK).json({
