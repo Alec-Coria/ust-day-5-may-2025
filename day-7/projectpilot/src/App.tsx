@@ -23,7 +23,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     !!localStorage.getItem('accessToken')
   );
-  const location = useLocation(); // 👈 Para saber en qué ruta estamos
+  const location = useLocation(); //Para saber en qué ruta estamos
 
   const { mutate: logout } = useLogout();
 
