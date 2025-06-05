@@ -1,7 +1,7 @@
 import { User } from '../User';
 // const baseUrl = 'http://localhost:4000';
 // Backend URL para NestJS
-const baseUrl = 'http://localhost:3001'
+const baseUrl = 'http://localhost:3000'
 const url = `${baseUrl}/users`;
 
 function translateStatusToErrorMessage(status: number) {

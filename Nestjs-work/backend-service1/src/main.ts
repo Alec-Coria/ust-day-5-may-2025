@@ -9,7 +9,8 @@ async function bootstrap() {
   //app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist:true
+      whitelist:true,
+      //trasnform:true //revisar
     })
   );
     const config = new DocumentBuilder()
