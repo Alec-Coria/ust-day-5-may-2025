@@ -7,9 +7,9 @@ const logger = new Logger('Microservice');
 async function bootstrap() {
   const app = await NestFactory.createMicroservice(AppModule,{
     transport: Transport.TCP,
+    options: { port: 3001 }
   });
-  await app.listen(() => {
-    logger.log('Microservice is listening');
-  });
+  await app.listen();
+  logger.log('Microservice is listening');
 }
 bootstrap();
