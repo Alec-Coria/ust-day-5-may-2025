@@ -3,7 +3,7 @@ import { HydratedDocument } from 'mongoose'
 
 export type UserDocument = HydratedDocument<User>
 
-@Schema({ collection: 'users', timestamps: true })
+@Schema({ collection: 'docker-exs-users', timestamps: true })
 export class User {
   @Prop()
   fullName: string

@@ -31,7 +31,10 @@ export class UserService {
 
   async updateUser(id: string, body: UpdateUserInput): Promise<UserPayload> {
     await this.userModel.updateOne({ _id: id }, body)
-    const updatedUser = this.userModel.findById(id)
+    const updatedUser = await this.userModel.findById(id)
+    if(!updatedUser){
+      throw new NotFoundException(`User with id ${id} not found after update`)
+    }
     return updatedUser
   }
 
